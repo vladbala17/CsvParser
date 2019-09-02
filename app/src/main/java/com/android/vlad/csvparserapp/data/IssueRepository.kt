@@ -1,6 +1,5 @@
 package com.android.vlad.csvparserapp.data
 
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.android.vlad.csvparserapp.data.source.local.IssueDAO
 import com.android.vlad.csvparserapp.model.Issue
@@ -23,7 +22,7 @@ class IssueRepository(private val issueDAO: IssueDAO) {
         }
     }
 
-    @WorkerThread
+
     suspend fun parseCsv(path: InputStreamReader): List<Issue> = withContext(Dispatchers.IO) {
         val fileReader: BufferedReader?
 
@@ -46,6 +45,10 @@ class IssueRepository(private val issueDAO: IssueDAO) {
         }
         return@withContext issues
 
+    }
+
+    suspend fun loadSortedIssues(): List<Issue> {
+        return issueDAO.getIssuesSortedByName()
     }
 
 

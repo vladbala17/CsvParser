@@ -3,6 +3,7 @@ package com.android.vlad.csvparserapp
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.vlad.csvparserapp.data.IssueRepository
 import com.android.vlad.csvparserapp.data.source.local.IssueDatabase
@@ -17,6 +18,8 @@ class IssueViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: IssueRepository
     private val filePath: InputStreamReader
     val allIssues: LiveData<List<Issue>>
+    private val _sortedIssues = MutableLiveData<List<Issue>>()
+    val sortedIssues = _sortedIssues
 
     init {
         val issueDAO = IssueDatabase.getDatabase(application.applicationContext).issueDao()
@@ -28,6 +31,12 @@ class IssueViewModel(application: Application) : AndroidViewModel(application) {
     fun refreshDb() {
         viewModelScope.launch {
             repository.refreshDb(filePath)
+        }
+    }
+
+    fun onSortByFirstName() {
+        viewModelScope.launch {
+            _sortedIssues.value = repository.loadSortedIssues()
         }
     }
 }

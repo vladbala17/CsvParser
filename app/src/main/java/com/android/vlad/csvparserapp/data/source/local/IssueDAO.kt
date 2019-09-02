@@ -17,4 +17,7 @@ interface IssueDAO {
 
     @Query("DELETE FROM issue_table")
     fun deleteAllIssues()
+
+    @Query("SELECT * FROM issue_table ORDER BY `First name` ASC")
+    suspend fun getIssuesSortedByName(): List<Issue>
 }
